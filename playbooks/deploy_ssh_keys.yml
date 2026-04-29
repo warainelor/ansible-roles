@@ -2,7 +2,5 @@
 - name: Deploy SSH keys to servers
   hosts: all
   become: true
-  vars_files:
-    - vars/ssh_keys.yml
   roles:
-    - role: ssh_keys
+    - ssh_keys

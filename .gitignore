@@ -1,6 +1,7 @@
 # ide
 .ansible/
 # ansible
+ansible.cfg
 inventory/
 vars/
 files/keys/

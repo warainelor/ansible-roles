@@ -1,0 +1,14 @@
+# Managed by Ansible
+Port {{ ssh_port }}
+PermitRootLogin no
+PasswordAuthentication no
+PermitEmptyPasswords no
+PubkeyAuthentication yes
+
+# Set other SSH options as needed
+UsePAM yes
+ChallengeResponseAuthentication no
+X11Forwarding yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server

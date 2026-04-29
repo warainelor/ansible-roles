@@ -26,9 +26,9 @@ ssh_keys_users:
 ## Run
 
 ```bash
-ansible-playbook -i inventory/hosts playbooks/deploy_ssh_keys.yml
+ansible-playbook -i inventory/hosts playbooks/deploy_ssh_keys.yml --extra-vars "@vars/ssh_keys.yml"
 ```
 
 ```bash
-ansible-playbook -i inventory/hosts playbooks/deploy_ssh_keys.yml --ssh-common-args='-o StrictHostKeyChecking=no'
+ansible-playbook -i inventory/hosts playbooks/deploy_ssh_keys.yml --ssh-common-args='-o StrictHostKeyChecking=no' --extra-vars "@vars/ssh_keys.yml"
 ```

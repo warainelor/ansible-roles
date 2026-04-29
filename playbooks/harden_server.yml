@@ -1,0 +1,6 @@
+---
+- name: Harden server security
+  hosts: all
+  become: true
+  roles:
+    - server_harden

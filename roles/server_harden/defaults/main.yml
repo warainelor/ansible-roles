@@ -1,0 +1,11 @@
+---
+user_group: "sudo"
+user_shell: "/bin/bash"
+
+additional_packages:
+  - git
+  - ufw
+  - nmap
+  - net-tools
+  - curl
+  - fail2ban

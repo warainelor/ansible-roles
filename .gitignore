@@ -1,0 +1,6 @@
+# ide
+.ansible/
+# ansible
+inventory/
+vars/
+files/keys/

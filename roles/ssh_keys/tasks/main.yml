@@ -1,0 +1,66 @@
+---
+# tasks/main.yml
+- name: Ask for SSH credentials
+  ansible.builtin.pause:
+    prompt: |
+      Enter SSH login for connecting to the virtual machine:
+  register: ssh_login_input
+  when: ansible_user is not defined
+
+- name: Set SSH user from input
+  ansible.builtin.set_fact:
+    ansible_user: "{{ ssh_login_input.user_input }}"
+  when:
+    - ansible_user is not defined
+    - ssh_login_input is defined
+    - ssh_login_input.user_input is not none
+
+- name: Ask for SSH password
+  ansible.builtin.pause:
+    prompt: |
+      Enter SSH password for user '{{ ansible_user }}':
+  register: ssh_password_input
+  when: ansible_password is not defined
+
+- name: Set SSH password from input
+  ansible.builtin.set_fact:
+    ansible_password: "{{ ssh_password_input.user_input }}"
+  when:
+    - ansible_password is not defined
+    - ssh_password_input is defined
+    - ssh_password_input.user_input is not none
+
+- name: Configure SSH connection with provided credentials
+  ansible.builtin.set_fact:
+    ansible_connection: ssh
+    ansible_ssh_pass: "{{ ansible_password }}"
+    ansible_become_pass: "{{ ansible_password }}"
+  when:
+    - ansible_connection is not defined or ansible_connection != "ssh"
+    - ansible_ssh_pass is not defined
+    - ansible_become_pass is not defined
+
+- name: Ensure SSH directories and files exist for each user
+  ansible.builtin.file:
+    path: "{{ item.home_dir }}/.ssh"
+    state: directory
+    mode: '0700'
+    owner: "{{ item.name }}"
+    group: "{{ item.group | default(item.name) }}"
+  loop: "{{ ssh_keys_users }}"
+  when: item.home_dir is defined
+
+- name: Deploy authorized_keys file for each user
+  ansible.builtin.template:
+    src: authorized_keys.j2
+    dest: "{{ item.home_dir }}/.ssh/authorized_keys"
+    mode: '0600'
+    owner: "{{ item.name }}"
+    group: "{{ item.group | default(item.name) }}"
+  loop: "{{ ssh_keys_users }}"
+  vars:
+    current_user: "{{ item }}"
+  when: >
+    item.home_dir is defined and
+    item.ssh_keys is defined and
+    (item.ssh_keys | length) > 0

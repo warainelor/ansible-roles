@@ -4,44 +4,27 @@ Ansible role to deploy SSH public keys to remote servers
 
 ## Usage
 
-Add keys to files/keys/*.pub
+1. Add public keys to files/keys/*.pub
 
-Define credentials in inventory/hosts:
+2. Define credentials in inventory/hosts:
 ```ini
 [servers]
 server1 ansible_host=192.168.1.10 ansible_user=ubuntu ansible_password=secret123
 ```
 
-Add vars to vars/ssh_keys.yml:
+3. Add vars to vars/harden_server.yml:
 ```yaml
 ---
 # Настройки пользователя
-new_user: "deploy"
-user_group: "sudo"
-user_shell: "/bin/bash"
+new_user: "user"
 
 # Порт SSH
-ssh_port: 2220
-
-# Программы для установки
-additional_packages:
-  - git
-  - ufw
-  - nmap
-  - net-tools
-  - curl
-  - fail2ban
+ssh_port: 2222
 
 # Явный список SSH‑ключей для пользователей
-# Пути относительные к корню проекта
-users_ssh_keys:
-  - username: "{{ new_user }}"
-    keys:
-      - "files/keys/key1.pub"
-      - "files/keys/key2.pub"
-  - username: "user2"
-    keys:
-      - "files/keys/user2.pub"
+ssh_keys:
+  - "{{ lookup('ansible.builtin.file', '../files/keys/key1.pub') }}"
+  - "{{ lookup('ansible.builtin.file', '../files/keys/key2.pub') }}"
 ```
 
 ## Run
